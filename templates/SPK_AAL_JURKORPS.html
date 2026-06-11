@@ -691,11 +691,10 @@ tbody td.no-col { color: var(--gray-400); font-size: 11px; width: 36px; }
 </main>
 
 <script>
-//  STATE GLOBAL
 let hasilData = [];
 let bobotData = {};
-let templateWorkbook = null;  // tetap ada untuk backward compat
-let templateFile = null;       // File asli untuk dikirim ke server
+let templateWorkbook = null;
+let templateFile = null;
 let filterNama = '';
 let filterKorps = '';
 let halamanAktif = 1;
@@ -704,7 +703,6 @@ const PER_HALAMAN = 15;
 const KORPS_LIST = ['Pelaut', 'Teknik', 'Elektro', 'Suplai', 'Marinir'];
 const KORPS_CODE = { Pelaut:'P', Teknik:'T', Elektro:'E', Suplai:'S', Marinir:'M' };
 
-//  KOLOM INDEX (0-based)
 const COL_NO=0, COL_NAMA=1, COL_NO_AK=2;
 const COL_PSI_I=3, COL_PSI_II=4, COL_PSI_III=5, COL_PSI_IV=6, COL_PSI_V=7;
 const COL_STAKES=9, COL_KESWA=10;
@@ -714,7 +712,6 @@ const COL_AKD_ING=21, COL_AKD_MAT=22, COL_AKD_FIS=23;
 const COL_IPK=26;
 const COL_PIL_I=28, COL_PIL_II=29, COL_PIL_III=30, COL_PIL_IV=31, COL_PIL_V=32;
 
-//  FUNGSI KONVERSI
 function safeStr(val) {
   if (val === null || val === undefined) return '';
   const s = String(val).trim();
@@ -802,13 +799,11 @@ function konversiC7(pilI, pilII, pilIII, pilIV, pilV, korps) {
   return 1;
 }
 
-//  ENTROPY & SAW
 function hitungEntropyBobot(matriks) {
   const n = matriks.length;
   const cols = matriks[0].length;
   const bobot = new Array(cols);
 
-  // Hitung sum per kolom
   const colSum = new Array(cols).fill(0);
   for (let i = 0; i < n; i++)
     for (let j = 0; j < cols; j++)
@@ -816,7 +811,6 @@ function hitungEntropyBobot(matriks) {
   for (let j = 0; j < cols; j++)
     if (colSum[j] === 0) colSum[j] = 1e-10;
 
-  // P matrix & entropy
   const E = new Array(cols).fill(0);
   for (let j = 0; j < cols; j++) {
     let eSum = 0;
@@ -850,7 +844,6 @@ function normalisasiSAW(matriks) {
   return matriks.map(row => row.map((val, j) => val / colMax[j]));
 }
 
-//  PROSES UTAMA
 function proses(rawRows) {
   const n = rawRows.length;
 
@@ -930,7 +923,6 @@ function proses(rawRows) {
       if (row[`V_${k}`] > bestV) { bestV = row[`V_${k}`]; bestKorps = k; }
     }
     row.Rekomendasi = bestKorps;
-    // C1 dan C7 untuk korps rekomendasi (untuk tampilan tabel)
     row.C1 = row[`C1_${bestKorps}`];
     row.C7 = row[`C7_${bestKorps}`];
   }
@@ -938,7 +930,6 @@ function proses(rawRows) {
   return { hasil, bobotPerKorps };
 }
 
-//  UPLOAD & PARSING
 const fileInput = document.getElementById('file-input');
 const uploadZone = document.getElementById('upload-zone');
 
@@ -955,11 +946,9 @@ document.getElementById('btn-pilih-template').addEventListener('click', () => {
 document.getElementById('template-input').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
-  // Simpan File asli untuk dikirim ke server via FormData
   templateFile = file;
   document.getElementById('template-status').textContent = `✓ ${file.name}`;
   document.getElementById('template-status').style.color = 'var(--teknik-dark)';
-  // Aktifkan upload kadet setelah template dipilih
   document.getElementById('upload-hero').classList.remove('disabled');
   e.target.value = '';
 });
@@ -974,17 +963,14 @@ uploadZone.addEventListener('drop', e => {
   else alert('Hanya file .xlsx yang diterima.');
 });
 
-// File data kadet disimpan untuk dikirim ulang saat Export
 let fileDataKadet = null;
 
 function handleFile(file) {
-  // Simpan file asli — akan dikirim lagi ke server saat tombol Export ditekan
   fileDataKadet = file;
 
   document.getElementById('upload-status').textContent = `Membaca: ${file.name}…`;
   document.getElementById('loading-overlay').classList.add('show');
 
-  // Proses lokal di JS untuk tampilan tabel (filter, paginate, bobot)
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
@@ -1034,7 +1020,6 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
-//  RENDER STAT CARDS
 function updateStatCards() {
   const total = hasilData.length;
   document.getElementById('stat-total').textContent = total;
@@ -1046,7 +1031,6 @@ function updateStatCards() {
   }
 }
 
-//  RENDER TABEL
 function onFilterChange() {
   filterNama = document.getElementById('search-nama').value.toLowerCase();
   filterKorps = document.getElementById('filter-korps').value;
@@ -1134,7 +1118,6 @@ function goPage(p) {
   renderTabel();
 }
 
-//  RENDER DISTRIBUSI (Tab 2) — Template JURKORPS style
 function renderDistribusi() {
   if (hasilData.length === 0) return;
 
@@ -1145,7 +1128,7 @@ function renderDistribusi() {
     const kuotaEl = document.getElementById(`kuota-${k}`);
     const kuota = parseInt(kuotaEl?.value || 0) || 0;
     const saran = hasilData.filter(r => r.Rekomendasi === k).length;
-    const selisih = kuota - saran; // positif = kuota > saran (kekurangan), negatif = kelebihan
+    const selisih = kuota - saran;
     totalKuota += kuota;
     totalSaran += saran;
 
@@ -1181,7 +1164,6 @@ function renderDistribusi() {
   document.getElementById('dist-data').style.display = 'block';
 }
 
-//  RENDER BOBOT ENTROPY (Tab 2)
 const KRITERIA_LABELS = ['C1 – Psi', 'C2 – Kes', 'C3 – Jas', 'C4 – Lat', 'C5 – Akd', 'C6 – Kep', 'C7 – Pil'];
 const KORPS_COLORS = {
   Pelaut:  'var(--pelaut-dark)',
@@ -1215,7 +1197,6 @@ function renderBobot() {
   document.getElementById('bobot-data').style.display = 'grid';
 }
 
-//  EXPORT EXCEL
 function exportExcel() {
   if (hasilData.length === 0) { alert('Tidak ada data untuk diekspor.'); return; }
   if (!templateFile) { alert('Pilih template terlebih dahulu sebelum export.'); return; }
@@ -1262,12 +1243,7 @@ function exportExcel() {
     });
 }
 
-// exportKeTemplate dipindahkan ke server.py
 
-// exportTanpaTemplate dipindahkan ke server.py
-
-
-//  CEK STATUS SERVER SAAT HALAMAN LOAD
 (function() {
   fetch('/ping')
     .then(r => r.json())
@@ -1279,7 +1255,6 @@ function exportExcel() {
     });
 })();
 
-//  NAV TAB
 function showPage(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
