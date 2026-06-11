@@ -1,9 +1,3 @@
-"""
-server.py — Flask backend untuk SPK Penentuan Korps AAL
-Jalankan: python server.py
-Akses HTML di browser, lalu upload template + data kadet.
-"""
-
 from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 import io
@@ -18,11 +12,9 @@ from openpyxl.cell.cell import MergedCell
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
-CORS(app)  # izinkan request dari file HTML lokal
+CORS(app)
 
-# ──────────────────────────────────────────────
-# DEFINISI KOLOM DATA MENTAH
-# ──────────────────────────────────────────────
+
 COL_NO       = 0
 COL_NAMA     = 1
 COL_NO_AK    = 2
@@ -58,9 +50,7 @@ KORPS_NAMA = {
     'M': 'Marinir',
 }
 
-# ──────────────────────────────────────────────
-# FUNGSI KONVERSI NILAI
-# ──────────────────────────────────────────────
+
 def safe_str(val):
     s = str(val).strip()
     return '' if s.lower() == 'nan' else s
@@ -135,9 +125,7 @@ def konversi_c7(pil_i, pil_ii, pil_iii, pil_iv, pil_v, korps):
             return skor_map[i]
     return 1
 
-# ──────────────────────────────────────────────
-# BACA DATA & HITUNG ENTROPY-SAW
-# ──────────────────────────────────────────────
+
 def baca_data(file_bytes):
     df_raw = pd.read_excel(io.BytesIO(file_bytes), sheet_name=0, header=None)
     data = df_raw.iloc[6:].reset_index(drop=True)
@@ -244,9 +232,7 @@ def proses(data_bytes):
 
     return hasil, bobot_per_korps
 
-# ──────────────────────────────────────────────
-# TULIS HASIL KE TEMPLATE
-# ──────────────────────────────────────────────
+
 def buat_output_excel(hasil, bobot_per_korps, template_bytes, angkatan):
     wb = load_workbook(io.BytesIO(template_bytes))
     ws = wb.active
@@ -355,7 +341,6 @@ def buat_output_excel(hasil, bobot_per_korps, template_bytes, angkatan):
 
         ws.row_dimensions[baris].height = 16
 
-    # Sheet Bobot Entropy
     if "Bobot Entropy" in wb.sheetnames:
         ws2 = wb["Bobot Entropy"]
     else:
@@ -387,18 +372,9 @@ def buat_output_excel(hasil, bobot_per_korps, template_bytes, angkatan):
     out.seek(0)
     return out
 
-# ──────────────────────────────────────────────
-# FLASK ROUTES
-# ──────────────────────────────────────────────
+
 @app.route('/proses', methods=['POST'])
 def route_proses():
-    """
-    Menerima multipart form:
-      - template: file Template_JURKORPS.xlsx
-      - data:     file data kadet Excel
-      - angkatan: string nomor angkatan
-    Mengembalikan file xlsx hasil.
-    """
     if 'template' not in request.files or 'data' not in request.files:
         return jsonify({'error': 'File template dan data wajib diupload'}), 400
 
@@ -428,7 +404,6 @@ def route_proses():
     )
 
 from flask import render_template
-
 @app.route('/')
 def index():
     return render_template('SPK_AAL_JURKORPS.html')
@@ -439,7 +414,4 @@ def ping():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    print("=" * 55)
-    print("  SPK AAL — Flask Server")
-    print("=" * 55)
     app.run(debug=False, host='0.0.0.0', port=port)
