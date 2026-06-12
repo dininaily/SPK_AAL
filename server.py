@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify, session, redirect, url_for, render_template
 from flask_cors import CORS
 import io
 import pandas as pd
@@ -13,6 +13,9 @@ warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 CORS(app)
+app.secret_key = os.environ.get('SECRET_KEY', 'ganti-dengan-kunci-rahasia-acak')
+
+PASSWORD_SPK = os.environ.get('SPK_PASSWORD', 'gantipassword123')
 
 
 COL_NO       = 0
@@ -406,7 +409,24 @@ def route_proses():
 from flask import render_template
 @app.route('/')
 def index():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('SPK_AAL_JURKORPS.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        if password == PASSWORD_SPK:
+            session['logged_in'] = True
+            return redirect(url_for('index'))
+        return render_template('login.html', error='Password salah')
+    return render_template('login.html', error=None)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 @app.route('/ping', methods=['GET'])
 def ping():

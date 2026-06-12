@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - SPK AAL</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(135deg, #0F2A4A, #1A3A5C);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 380px;
+  }
+  .login-box h1 {
+    font-size: 20px;
+    color: #1A3A5C;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .login-box p {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .login-box input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .login-box button {
+    width: 100%;
+    padding: 12px;
+    background: #1A3A5C;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .login-box button:hover {
+    background: #0F2A4A;
+  }
+  .error {
+    color: #DC2626;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>SPK Penentuan Korps Kadet</h1>
+    <p>Akademi Angkatan Laut · Metode Entropy-SAW</p>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+<form method="POST">
+  <input type="password" name="password" placeholder="Masukkan password" required autofocus>
+  <button type="submit">Masuk</button>
+</form>
+  </div>
+</body>
+</html>
