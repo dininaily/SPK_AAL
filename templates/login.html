@@ -4,44 +4,102 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - SPK AAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     font-family: 'Inter', Arial, sans-serif;
-    background: linear-gradient(135deg, #0F2A4A, #1A3A5C);
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: radial-gradient(circle at 20% 20%, #2E6DA4 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, #C8A84B 0%, transparent 35%),
+                radial-gradient(circle at 75% 85%, #1A3A5C 0%, transparent 50%),
+                linear-gradient(135deg, #0D2137 0%, #1A3A5C 100%);
+    background-blend-mode: screen, screen, screen, normal;
+    padding: 24px;
   }
+
   .login-box {
     background: #fff;
     padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(13,33,55,0.35);
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
   }
+  .login-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #1A3A5C, #C8A84B);
+  }
+
   .login-box h1 {
-    font-size: 20px;
-    color: #1A3A5C;
-    margin-bottom: 8px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #0D2137;
+    margin-bottom: 6px;
     text-align: center;
+    line-height: 1.3;
   }
-  .login-box p {
+  .login-box p.subtitle {
     font-size: 13px;
-    color: #666;
+    color: #4B5563;
     text-align: center;
     margin-bottom: 24px;
   }
-  .login-box input[type="password"] {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #ccc;
+  .login-box p.subtitle .gold {
+    color: #A16207;
+    font-weight: 600;
+  }
+
+  .error {
+    color: #DC2626;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 16px;
+    background: #FEF2F2;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 14px;
+  }
+
+  .field-wrap {
+    position: relative;
     margin-bottom: 16px;
   }
+  .field-wrap input[type="password"],
+  .field-wrap input[type="text"] {
+    width: 100%;
+    padding: 12px 44px 12px 14px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-wrap input:focus {
+    border-color: #2E6DA4;
+  }
+  .field-wrap .toggle-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    color: #9CA3AF;
+    font-size: 13px;
+  }
+
   .login-box button {
     width: 100%;
     padding: 12px;
@@ -52,29 +110,65 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
   }
   .login-box button:hover {
-    background: #0F2A4A;
+    background: #0D2137;
   }
-  .error {
-    color: #DC2626;
-    font-size: 13px;
+
+  .login-box .pkl-info {
+    margin-top: 18px;
+    margin-bottom: 0;
+    font-size: 11px;
+    color: #9CA3AF;
     text-align: center;
-    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .copyright {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    width: 100%;
   }
 </style>
 </head>
 <body>
   <div class="login-box">
-    <h1>SPK Penentuan Korps Kadet</h1>
-    <p>Akademi Angkatan Laut · Metode Entropy-SAW</p>
+    <h1>Sistem Pendukung Keputusan<br>Penentuan Korps Kadet</h1>
+    <p class="subtitle">Akademi Angkatan Laut · <span class="gold">Metode Entropy-SAW</span></p>
+
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
-<form method="POST">
-  <input type="password" name="password" placeholder="Masukkan password" required autofocus>
-  <button type="submit">Masuk</button>
-</form>
+
+    <form method="POST">
+      <div class="field-wrap">
+        <input type="password" name="password" id="password-field" placeholder="Masukkan password" required autofocus>
+        <span class="toggle-eye" onclick="togglePassword()">Lihat</span>
+      </div>
+      <button type="submit">Masuk</button>
+    </form>
+
+    <p class="pkl-info">Praktik Kerja Lapangan · Departemen Matematika,<br>Universitas Airlangga</p>
   </div>
+
+  <p class="copyright">© 2026 Departemen Matematika, Universitas Airlangga</p>
+
+  <script>
+    function togglePassword() {
+      const field = document.getElementById('password-field');
+      const span = field.nextElementSibling;
+      if (field.type === 'password') {
+        field.type = 'text';
+        span.textContent = 'Sembunyi';
+      } else {
+        field.type = 'password';
+        span.textContent = 'Lihat';
+      }
+    }
+  </script>
 </body>
 </html>

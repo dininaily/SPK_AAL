@@ -41,6 +41,28 @@ body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--
   box-shadow: 0 2px 16px rgba(0,0,0,0.22);
   position: sticky; top: 0; z-index: 100;
 }
+.site-header { position: relative; }
+.btn-logout {
+  position: absolute; top: 0; right: 32px;
+  height: 100%;
+  display: flex; align-items: center;
+  font-size: 12px; color: #FCA5A5;
+  text-decoration: none;
+  border: 1px solid rgba(248,113,113,0.4);
+  padding: 5px 14px; border-radius: 20px;
+  transition: all 0.2s;
+}
+.btn-logout:hover {
+  background: rgba(248,113,113,0.15);
+  color: #fff;
+  border-color: #F87171;
+}
+.site-footer {
+  text-align: center;
+  padding: 24px 32px;
+  font-size: 12px;
+  color: var(--gray-400);
+}
 .header-inner {
   max-width: 1400px; margin: 0 auto;
   padding: 18px 32px;
@@ -459,11 +481,12 @@ tbody td.no-col { color: var(--gray-400); font-size: 11px; width: 36px; }
     <p class="header-credit">Praktik Kerja Lapangan · Departemen Matematika, Universitas Airlangga</p>
 
   </div>
-  <nav class="nav-tabs">
+  <nav class="nav-tabs" style="position:relative;">
     <div class="nav-tabs-inner">
       <div class="nav-tab active" onclick="showPage('olahdata',this)">Olah Data</div>
       <div class="nav-tab" onclick="showPage('analisis',this)">Analisis Korps</div>
     </div>
+    <a href="/logout" class="btn-logout">Keluar</a>
   </nav>
 </header>
 
@@ -689,6 +712,10 @@ tbody td.no-col { color: var(--gray-400); font-size: 11px; width: 36px; }
 
 </div>
 </main>
+
+<footer class="site-footer">
+  &copy; 2026 Departemen Matematika, Universitas Airlangga
+</footer>
 
 <script>
 let hasilData = [];
