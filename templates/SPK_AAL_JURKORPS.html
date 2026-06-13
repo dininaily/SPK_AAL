@@ -43,13 +43,13 @@ body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--
 }
 .site-header { position: relative; }
 .btn-logout {
-  position: absolute; top: 0; right: 32px;
-  height: 100%;
-  display: flex; align-items: center;
-  font-size: 12px; color: #FCA5A5;
+  position: absolute; top: 50%; right: 32px;
+  transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: #FCA5A5;
   text-decoration: none;
-  border: 1px solid rgba(248,113,113,0.4);
-  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid rgba(248,113,113,0.5);
+  padding: 5px 14px; border-radius: 18px;
   transition: all 0.2s;
 }
 .btn-logout:hover {
@@ -486,7 +486,7 @@ tbody td.no-col { color: var(--gray-400); font-size: 11px; width: 36px; }
       <div class="nav-tab active" onclick="showPage('olahdata',this)">Olah Data</div>
       <div class="nav-tab" onclick="showPage('analisis',this)">Analisis Korps</div>
     </div>
-    <a href="/logout" class="btn-logout">Keluar</a>
+    <a href="/logout" class="btn-logout">⏻ Keluar</a>
   </nav>
 </header>
 
