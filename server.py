@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = os.environ.get('SECRET_KEY', 'ganti-dengan-kunci-rahasia-acak')
 
-PASSWORD_SPK = os.environ.get('SPK_PASSWORD', 'gantipassword123')
+PASSWORD_SPK = os.environ.get('SPK_PASSWORD', 'subditmindik2026')
 
 
 COL_NO       = 0
